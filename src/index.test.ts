@@ -1,5 +1,4 @@
 import test from "ava";
-import fs from "fs";
 
 import { transform } from "./index";
 

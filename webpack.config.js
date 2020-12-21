@@ -1,11 +1,17 @@
-import path from "path";
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
-  entry: "./src/index.ts",
-  output: {
-    filename: "out.js",
+  mode: "development",
+  devtool: "source-map",
+  entry: {
+    vendor: ["react", "react-dom"],
+    app: "./src/example/index.tsx",
+  },
+  resolve: {
+    extensions: [".ts", ".tsx", ".js"],
   },
   module: {
-    rules: [{ test: /\.ts$/, use: "ts-loader" }],
+    rules: [{ test: /\.tsx$/, use: "ts-loader" }],
   },
+  plugins: [new CleanWebpackPlugin()],
 };

@@ -5,13 +5,18 @@
   "main": "index.js",
   "author": "lnwu <wind2729@gmail.com>",
   "license": "MIT",
-  "type": "module",
   "scripts": {
-    "test": "ava -v"
+    "test": "ava -v",
+    "build": "webpack"
   },
   "dependencies": {
     "@types/node": "^14.14.14",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "ava": "^3.14.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "ts-loader": "^8.0.12",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3",
