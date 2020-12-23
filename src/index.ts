@@ -1,4 +1,5 @@
 import ts, { factory, isSourceFile } from "typescript";
+import crypto from "crypto";
 
 const createTransformer = () => {
   const imports = new Set<string>();
@@ -86,7 +87,9 @@ const addNewImportNode = (imports: Set<string>): ts.Node[] => {
 };
 
 const pathToUniqueName = (path: string): string => {
-  return `__${path.toUpperCase().replace("./", "")}__`;
+  const name = `__${path.toUpperCase().replace("./", "")}__`;
+
+  return name + crypto.createHash("sha1").update("name").digest("hex");
 };
 
 export default createTransformer;
