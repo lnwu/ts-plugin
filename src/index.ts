@@ -14,30 +14,10 @@ const createTransformer = () => {
       }
 
       if (isSourceFile(node.parent)) {
-        const nodes: ts.Node[] = [];
-        nodes.push(ts.visitEachChild(node, visitor, ctx));
-
-        if (imports.size > 0) {
-          for (const importPath of imports) {
-            nodes.push(
-              factory.createImportDeclaration(
-                undefined,
-                undefined,
-                factory.createImportClause(
-                  false,
-                  undefined,
-                  factory.createNamespaceImport(
-                    factory.createIdentifier(pathToUniqueName(importPath))
-                  )
-                ),
-                factory.createStringLiteral(importPath)
-              )
-            );
-            imports.delete(importPath);
-          }
-        }
-
-        return nodes;
+        return [
+          ts.visitEachChild(node, visitor, ctx),
+          ...addNewImportNode(imports),
+        ];
       }
 
       return ts.visitEachChild(node, visitor, ctx);
@@ -80,19 +60,30 @@ const updateDynamicImportNode = (
   return ts.visitEachChild(node, visitor, ctx);
 };
 
-const nodeNew = () =>
-  factory.createImportDeclaration(
-    undefined,
-    undefined,
-    factory.createImportClause(
-      false,
-      undefined,
-      factory.createNamespaceImport(
-        factory.createIdentifier("__SOME_UNIQUE_NAME__")
+const addNewImportNode = (imports: Set<string>): ts.Node[] => {
+  if (imports.size === 0) {
+    return [];
+  }
+  const nodes: ts.Node[] = [];
+  for (const importPath of imports) {
+    nodes.push(
+      factory.createImportDeclaration(
+        undefined,
+        undefined,
+        factory.createImportClause(
+          false,
+          undefined,
+          factory.createNamespaceImport(
+            factory.createIdentifier(pathToUniqueName(importPath))
+          )
+        ),
+        factory.createStringLiteral(importPath)
       )
-    ),
-    factory.createStringLiteral("./Login")
-  );
+    );
+    imports.delete(importPath);
+  }
+  return nodes;
+};
 
 const pathToUniqueName = (path: string): string => {
   return `__${path.toUpperCase().replace("./", "")}__`;
